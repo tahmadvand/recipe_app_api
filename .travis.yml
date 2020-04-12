@@ -1,0 +1,34 @@
+language: python
+python:
+  - "3.8.2"
+
+services:
+  - docker
+
+before_script: pip3 install docker-compose
+# before script which is a script that Travis will run before it
+#executes any of the automation commands that we're going to input next.
+
+script:
+  - docker-compose run --rm app sh -c "python3 ./manage.py test && flake8"
+  # for running our tests
+  # flake8: linting tool
+  # run every time we
+  #push a change to github Travis is going to spin up a Python server running
+  #Python 3.8.2
+  # it's going to make the docker service available it's going to
+  #use pip to install docker compose and then finally it's going to run our
+  #script and if this exits with a failure then it will fail the build and it will
+  #send us a notification
+
+
+
+    ##.flake8: exclude: # exclude some of
+    #
+    #the automated scripts and tools that are created by Django because
+    #
+    #Django work to a 100 character limit whereas I like to work
+    #
+    #my projects to the 79 character limit (recommended) and so I exclude all the Django
+  #
+  #stuff so it doesn't fail on the linting when you run that
