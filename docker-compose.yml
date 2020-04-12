@@ -1,0 +1,40 @@
+version: '3'
+# The first line of our docker compose configuration file is the
+# version of Docker compose that we're going  to be writing our file for.
+
+services:
+  # Next we define the services that make up our application.
+  #Right now we only need one service for our Python Django application.
+ app:
+   # name of our service
+   build:
+     context: .
+     # we're going to have a service called app and the build section of the configuration
+     #we're going to set the context to . which is our current directory that we're running Docker compose from.
+   ports:
+     - "8000:8000"
+     # we're going to map our project from port 8000 on our host to port 8000 on our image
+   volumes:
+     # the volume allows us to get the updates that we make to our project
+     #Into our Docker image in real time.
+
+    # So it maps of volume from our local machine here into our Docker container that will be running our application.
+    #This means that whenever you change a file or you change something in the project it'll be automatically
+    #updated in the container and you don't need to restart Docker to get the changes into effect.
+     - ./app:/app
+   command: >
+     sh -c "python3 ./manage.py runserver 0.0.0.0:8000"
+
+
+
+#      the command that is used to run our application in our Docker container
+#      sh -c : shell run command
+#      this will run the Django development server available on all the IP addresses that run on the Dockerdocker-compose build
+   #container.
+
+   #  it builds our image using the Dock compose configuration.
+
+   # makes it very clear to see
+     #The command that you're running on versus all the Docker compose command.
+     #Technically you could just run the command straight on the image without using this sh -c
+   #But as I said I prefer to do it just to make it very clear.
