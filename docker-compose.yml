@@ -15,16 +15,18 @@ services:
      - "8000:8000"
      # we're going to map our project from port 8000 on our host to port 8000 on our image
    volumes:
+     - ./app:/app
      # the volume allows us to get the updates that we make to our project
      #Into our Docker image in real time.
 
     # So it maps of volume from our local machine here into our Docker container that will be running our application.
     #This means that whenever you change a file or you change something in the project it'll be automatically
     #updated in the container and you don't need to restart Docker to get the changes into effect.
-     - ./app:/app
-   command: >
-     sh -c "python3 ./manage.py runserver 0.0.0.0:8000"
 
+   command: >
+     sh -c "python manage.py wait_for_db &&
+            python manage.py migrate &&
+            python manage.py runserver 0.0.0.0:8000"
 
 
 #      the command that is used to run our application in our Docker container
@@ -38,3 +40,56 @@ services:
      #The command that you're running on versus all the Docker compose command.
      #Technically you could just run the command straight on the image without using this sh -c
    #But as I said I prefer to do it just to make it very clear.
+   environment:
+     - DB_HOST=db
+     # equal the name of the
+     #service that runs our database and that's going to be DB.
+     - DB_NAME=app
+     # equal our Postgres DB
+     - DB_USER=postgres
+     - DB_PASS=supersecretpassword
+   depends_on:
+     - db
+     # when you run docker compose you can set different services
+     #to depend on other services.
+
+     ## 1) The database service will start before the app service and 2)
+     #It means the database service will be available via the network when you use
+     #the hostname DB.
+
+
+
+### adding the database service here.
+# create a new service called db.
+ db:
+   image: postgres:10-alpine
+          # So this locates the postgres image on docker hub and it pulls down
+          # the version with the tag 10 alpine.
+          # So this is Postgres sql version 10 the
+          # Alpine or the lightweight version of the image.
+   environment:
+     # list of environment variables:
+     - POSTGRES_DB=app
+     - POSTGRES_USER=postgres
+     - POSTGRES_PASSWORD=supersecretpassword
+      ## You wouldn't use the same password here that you would use on a
+       #production system what you would do in production is on your build server or
+       #whatever is building your application like Jenkins or Travis you
+       #would then add an encrypted environment variable that overrides this when you
+       #push your application.
+
+       # We're just going to use this password for running the server locally for our
+       #development server which isn't a big deal most people don't even use a
+       #password when they run a local development server because it's outside
+       #of the internet it's not available to anyone else and it's only available on
+       #your local machine.
+
+       # Yes in a production site you would certainly want to ensure the passwords are not committed to GitHub.
+       #Typically you would use a secret management tool such as HashiCorp Vault or AWS Secrets Manager.
+       #You could also configure sensitive information via environment variables, which is a bit less secure
+       #but often sufficient if the system doesn't have highly sensitive data (like a government or bank).
+
+
+     # We're going to set up environment variables for the database
+     # name, the username and the password that is created when our database
+     # service starts.

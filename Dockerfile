@@ -10,6 +10,7 @@ ENV PYTHONUNBUFFERED 1
 # The reason for this is that it doesn't allow Python to buffer the outputs.
 # It just prints them directly.
 
+# Install dependencies
 COPY ./requirements.txt /requirements.txt
 # we need to copy our requirements.txt file to
 #requirements.txt
@@ -17,7 +18,19 @@ COPY ./requirements.txt /requirements.txt
 #to the Docker file, copy the requirements
 #file that we're going to create here and copy it on the Docker image to /requirements.txt
 
-RUN pip3 install -r /requirements.txt
+RUN apk add --update --no-cache postgresql-client
+# it uses the package manager that comes with Alpine
+#and it says this is the name of the package
+
+# this update means update theregistry before we add
+# it but this no cache means don't store the registry index on our docker file.
+RUN apk add --update --no-cache --virtual .tmp-build-deps \
+      gcc libc-dev linux-headers postgresql-dev
+# it sets up an alias for our
+#dependencies that we can use to easily remove all those dependencies later.
+RUN pip install -r /requirements.txt
+RUN apk del .tmp-build-deps
+# deletes the temporary requirements
 
 RUN mkdir /app
 WORKDIR /app

@@ -76,10 +76,26 @@ WSGI_APPLICATION = 'app.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': os.environ.get('DB_HOST'),
+        # enviroment variables
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASS'),
     }
 }
+# the benefit of this is that we can easily change our configuration when we
+# run our app on different servers by simply changing them in the environment
+# variables and we don't have to make any changes to our source code in order to
+# modify the hostname, the name, the username or the password.
+
+# This makes it
+# really useful when running your application in production because you
+# can simply upload your docker file to a service like Amazon ECS or kubernetes
+# and you can just set the appropriate environment variables and then your
+# application should work.
 
 
 # Password validation

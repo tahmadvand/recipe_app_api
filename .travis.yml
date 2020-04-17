@@ -24,11 +24,7 @@ script:
 
 
     ##.flake8: exclude: # exclude some of
-    #
     #the automated scripts and tools that are created by Django because
-    #
     #Django work to a 100 character limit whereas I like to work
-    #
     #my projects to the 79 character limit (recommended) and so I exclude all the Django
-  #
   #stuff so it doesn't fail on the linting when you run that
