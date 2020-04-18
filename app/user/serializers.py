@@ -26,6 +26,26 @@ class UserSerializer(serializers.ModelSerializer):
     # **: unwind this validated data into
     # the parameters of the create user function.
 
+    # make sure the password is set using the set
+    # password function instead of just setting it to whichever value is
+    # provided.
+    def update(self, instance, validated_data):
+        """Update a user, setting the password correctly and return it"""
+        password = validated_data.pop('password', None)
+        # remove the password from the validated data (pop), None: default value
+        user = super().update(instance, validated_data)
+        # super we'll call the model
+        # serializers update functions, so the default one, it will call the default
+        # function in our function so we can make use of all the functionality that's
+        # included in the default one whilst extending it slightly to customize it
+        # for our needs.
+        if password:
+            # if user provides a password
+            user.set_password(password)
+            user.save()
+
+        return user
+
 
 # so what Django rest framework does is when we're ready to create the user it
 # will call this create function and it will pass in the

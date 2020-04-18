@@ -31,8 +31,10 @@ class UserAdmin(BaseUserAdmin):
     # each () is a section, inside, we write the title
 
     # just note the comma here
-    # after name, if you're just providing one field then you need to make sure you add
-    # this comma because otherwise it thinks this is just a string and it won't work.
+    # after name, if you're just providing one field then you
+    # need to make sure you add
+    # this comma because otherwise it thinks this is just a
+    # string and it won't work.
 
     add_fieldsets = (
         (None, {
@@ -41,3 +43,4 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
 admin.site.register(models.User, UserAdmin)
+

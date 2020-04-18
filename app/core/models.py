@@ -14,8 +14,8 @@ class UserManager(BaseUserManager):
     # creating a super user.
 
     def create_user(self, email, password=None, **extra_fields):
-        # **extra_fields: take any of the extra functions that are passed in
-        # when you call the create user and pass them into extra fields
+        # **extra_fields: take any of the extra functions that are passed
+        # in when you call the create user and pass them into extra fields
         # makes our function a little more flexible
         """Creates and saves a new User"""
         if not email:
@@ -51,4 +51,5 @@ class User(AbstractBaseUser, PermissionsMixin):
     # it creates a new user manager for our object.
 
     USERNAME_FIELD = 'email'
-    # username and we're customizing that to email so we can use an email address.
+    # username and we're customizing that to email so we can use an email
+    # address.
