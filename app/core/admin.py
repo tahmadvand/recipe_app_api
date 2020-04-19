@@ -42,5 +42,10 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('email', 'password1', 'password2')
         }),
     )
+
+
 admin.site.register(models.User, UserAdmin)
+admin.site.register(models.Tag)
+# supports the basic create, read, update and delete
+# functions in the admin panel
 

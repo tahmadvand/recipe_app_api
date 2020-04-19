@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
+from django.conf import settings
+# recommended way to retrieve
+# different settings from the Django settings file
 
 # These are all things that are required to extend the Django user
 # model whilst making use of some of
@@ -53,3 +56,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     # username and we're customizing that to email so we can use an email
     # address.
+
+
+class Tag(models.Model):
+    """Tag to be used for a recipe"""
+    name = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    # foreign key to our user object.
+
+    def __str__(self):
+        return self.name

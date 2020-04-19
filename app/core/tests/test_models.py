@@ -3,6 +3,13 @@
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from .. import models
+
+
+#  makes it easy for us to create users in our test.
+def sample_user(email='test@londonappdev.com', password='testpass'):
+    """Create a sample user"""
+    return get_user_model().objects.create_user(email, password)
 
 
 class ModelTests(TestCase):
@@ -56,3 +63,21 @@ class ModelTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    # creates a tag and verifies that it converts to the correct string
+    # representation.
+    def test_tag_str(self):
+        """Test the tag string representation"""
+        tag = models.Tag.objects.create(
+            user=sample_user(),
+            #  it calls sample user and creates a new user for
+            # our test.
+            name='Vegan'
+            # give it a name of a tag we may use in
+            # our system.
+        )
+
+        self.assertEqual(str(tag), tag.name)
+        # it creates a
+        # tag and then we just assert that when we convert our tag model
+        # to a string it gives us the name.
