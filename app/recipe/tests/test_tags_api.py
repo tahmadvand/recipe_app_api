@@ -96,3 +96,26 @@ class PrivateTagsApiTests(TestCase):
         # and we want that to equal 1
         self.assertEqual(res.data[0]['name'], tag.name)
         # ake the first element of the data response
+
+    def test_create_tag_successful(self):
+        """Test creating a new tag"""
+        # create a payload we're going to make the request and
+        # then we're going to verify that the tag was created
+        payload = {'name': 'Simple'}
+        self.client.post(TAGS_URL, payload)
+
+        # verify the tag exists
+        exists = Tag.objects.filter(
+            user=self.user,
+            name=payload['name']
+        ).exists()
+        # will return a boolean true or false
+        self.assertTrue(exists)
+
+# what happens if we create a tag with an invalid name
+    def test_create_tag_invalid(self):
+        """Test creating a new tag with invalid payload"""
+        payload = {'name': ''}
+        res = self.client.post(TAGS_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

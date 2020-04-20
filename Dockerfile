@@ -13,21 +13,21 @@ ENV PYTHONUNBUFFERED 1
 # Install dependencies
 COPY ./requirements.txt /requirements.txt
 # we need to copy our requirements.txt file to
-#requirements.txt
-#What this does is it says copy from the directory adjacent
-#to the Docker file, copy the requirements
-#file that we're going to create here and copy it on the Docker image to /requirements.txt
+# requirements.txt
+# What this does is it says copy from the directory adjacent
+# to the Docker file, copy the requirements
+# file that we're going to create here and copy it on the Docker image to /requirements.txt
 
 RUN apk add --update --no-cache postgresql-client
 # it uses the package manager that comes with Alpine
-#and it says this is the name of the package
+# and it says this is the name of the package
 
 # this update means update theregistry before we add
 # it but this no cache means don't store the registry index on our docker file.
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
       gcc libc-dev linux-headers postgresql-dev
 # it sets up an alias for our
-#dependencies that we can use to easily remove all those dependencies later.
+# dependencies that we can use to easily remove all those dependencies later.
 RUN pip install -r /requirements.txt
 RUN apk del .tmp-build-deps
 # deletes the temporary requirements
@@ -36,7 +36,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY ./app /app
 # it creates a empty folder on our docket in the edge called forward slash at this location
-#and then it switches to that as the default directory.
+# and then it switches to that as the default directory.
 
 RUN adduser -D user
 # create a user that is going to run our application using docker
@@ -45,10 +45,10 @@ RUN adduser -D user
 # going to be used simply to run our processes from our project.
 USER user
 # switch to user
-## Security reasons ##
+"""Security reasons"""
 
-#terminal: docker build .
-#it says build which ever dock a file is in the root of our project that we're currently in.
+# terminal: docker build .
+# it says build which ever dock a file is in the root of our project that we're currently in.
 
-# And it should be fairly quick because we using the Alpine image and the Alpine image is a very lightweight
-#and minimal image that runs python.
+# And it should be fairly quick because we using the Alpine image and the Alpine
+# image is a very lightweight and minimal image that runs python.

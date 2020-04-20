@@ -16,6 +16,8 @@ class CreateUserView(generics.CreateAPIView):
 # objects in the database.
 
 # authentication view/our token view.
+
+
 class CreateTokenView(ObtainAuthToken):
     """Create a new auth token for the user"""
     # it sets the renderer so we can view this
@@ -24,6 +26,8 @@ class CreateTokenView(ObtainAuthToken):
     renderer_classes = api_settings.DEFAULT_RENDERER_CLASSES
 
 # create user or our manage user views.
+
+
 class ManageUserView(generics.RetrieveUpdateAPIView):
     """Manage the authenticated user"""
     serializer_class = UserSerializer
@@ -42,5 +46,5 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
         return self.request.user
     # So when the get object is called the request will have the user
     # attached to it because of the authentication classes so because we
-    # have the authentication class that takes care of take getting the authenticated
-    # user and assigning it to request.
+    # have the authentication class that takes care of take getting the
+    # authenticated user and assigning it to request.

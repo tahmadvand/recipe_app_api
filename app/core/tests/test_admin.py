@@ -17,9 +17,9 @@ class AdminSiteTests(TestCase):
         self.client = Client()
         # create test client
         # add a new user that we can use to test we're going
-        # to make sure the user is logged into our client and finally we're going to create
-        # a regular user that is not authenticated or that we can use to list in our admin
-        # page.
+        # to make sure the user is logged into our client and finally
+        # we're going to create a regular user that is not authenticated
+        # or that we can use to list in our admin page.
         self.admin_user = get_user_model().objects.create_superuser(
             email='admin@londonappdev.com',
             password='password123'
@@ -31,10 +31,11 @@ class AdminSiteTests(TestCase):
             name='Test User Full Name',
         )
 
-        # so what this does is it uses the client helper function that allows
-        # you to log a user in with the Django authentication and this really helps
-        # make our tests a lot easier to write because it means we don't have to
-        # manually log the user in we can just use this helper function.
+        # so what this does is it uses the client helper function that
+        # allows you to log a user in with the Django authentication and
+        # this really helps make our tests a lot easier to write because
+        # it means we don't have to manually log the user in we can just
+        # use this helper function.
 
     def test_users_listed(self):
         """Test that users are listed on the user page"""
@@ -55,25 +56,26 @@ class AdminSiteTests(TestCase):
         self.assertContains(res, self.user.email)
         # check that our response here contains a certain item.
 
-        # it looks into the actual content of this res because if you were to
-        # manually output this res it's just an object so it's intelligent enough to
-        # look into the actual output that is rendered and to check for the contents there
+        # it looks into the actual content of this res because if you
+        # were to manually output this res it's just an object so it's
+        # intelligent enough to look into the actual output that is
+        # rendered and to check for the contents there
 
-
-    # test for is we're just going to test that the change page renders correctly.
+# test for is we're just going to test that the change page renders correctly.
     def test_user_page_change(self):
         """Test that the user edit page works"""
         url = reverse('admin:core_user_change', args=[self.user.id])
         #  what this does is the reverse function will create a URL like this
         # /admin/core/user/id
-        # this is how the arguments function or the arguments argument works in the
-        # reverse function.
+        # this is how the arguments function or the arguments argument works
+        # in the reverse function.
         res = self.client.get(url)
         # we're going to do an HTTP get on the URL
 
         self.assertEqual(res.status_code, 200)
         # what we test here is that a
-        # status code for the response that our client gives is HTTP 200 which is the
+        # status code for the response that our client gives is HTTP 200
+        # which is the
         # status code for okay so that means HTTP 200 okay the page worked.
 
     # This is the page for adding new users in the Django admin.

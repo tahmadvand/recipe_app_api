@@ -19,22 +19,22 @@ class ModelTests(TestCase):
         # test email
         email = 'test@londonappdev.com'
         password = 'Password123'
-        user = get_user_model().objects.create_user(
-			email=email,
-			password=password
-		)
+        user = get_user_model().objects.create_user(email=email,
+                                                    password=password)
 
-        # run some assertions to make sure that the user was created correctly
+        # run some assertions to make sure that the user was created
+        # correctly
         # checking: user.email == email
         self.assertEqual(user.email, email)
         self.assertTrue(user.check_password(password))
         # password is encrypted, so we can check it using user.check_password
 
-## As you can see here it says create user missing one required argument username
-#this is because we haven't customized the user model and it's still expecting
-#the standard username field that is required for the Django default user model.
+# As you can see here it says create user missing one required argument
+# username this is because we haven't customized the user model and
+# it's still expecting
+# the standard username field that is required for the Django
+# default user model.
 
-#
     def test_new_user_email_normalized(self):
         """Test the email for a new user is normalized"""
         email = 'test@LONDONAPPDEV.com'

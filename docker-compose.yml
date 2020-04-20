@@ -10,7 +10,7 @@ services:
    build:
      context: .
      # we're going to have a service called app and the build section of the configuration
-     #we're going to set the context to . which is our current directory that we're running Docker compose from.
+     # we're going to set the context to . which is our current directory that we're running Docker compose from.
    ports:
      - "8000:8000"
      # we're going to map our project from port 8000 on our host to port 8000 on our image
@@ -19,8 +19,9 @@ services:
      # the volume allows us to get the updates that we make to our project
      #Into our Docker image in real time.
 
-    # So it maps of volume from our local machine here into our Docker container that will be running our application.
-    #This means that whenever you change a file or you change something in the project it'll be automatically
+    # So it maps of volume from our local machine here into our Docker container that will be
+    # running our application. This means that whenever you change a file or you change something
+    # in the project it'll be automatically
     #updated in the container and you don't need to restart Docker to get the changes into effect.
 
    command: >
@@ -29,17 +30,16 @@ services:
             python manage.py runserver 0.0.0.0:8000"
 
 
-#      the command that is used to run our application in our Docker container
-#      sh -c : shell run command
-#      this will run the Django development server available on all the IP addresses that run on the Dockerdocker-compose build
-   #container.
+# the command that is used to run our application in our Docker container
+# sh -c : shell run command
+# this will run the Django development server available on all the IP addresses
+# that run on the Dockerdocker-compose build container.
 
-   #  it builds our image using the Dock compose configuration.
-
-   # makes it very clear to see
-     #The command that you're running on versus all the Docker compose command.
-     #Technically you could just run the command straight on the image without using this sh -c
-   #But as I said I prefer to do it just to make it very clear.
+#  it builds our image using the Dock compose configuration.
+# makes it very clear to see
+# The command that you're running on versus all the Docker compose command.
+# Technically you could just run the command straight on the image without using
+# this sh -c But as I said I prefer to do it just to make it very clear.
    environment:
      - DB_HOST=db
      # equal the name of the
@@ -59,7 +59,7 @@ services:
 
 
 
-### adding the database service here.
+# adding the database service here.
 # create a new service called db.
  db:
    image: postgres:10-alpine
@@ -72,24 +72,24 @@ services:
      - POSTGRES_DB=app
      - POSTGRES_USER=postgres
      - POSTGRES_PASSWORD=supersecretpassword
-      ## You wouldn't use the same password here that you would use on a
-       #production system what you would do in production is on your build server or
-       #whatever is building your application like Jenkins or Travis you
-       #would then add an encrypted environment variable that overrides this when you
-       #push your application.
+      # You wouldn't use the same password here that you would use on a
+      # production system what you would do in production is on your build server or
+      # whatever is building your application like Jenkins or Travis you
+      # would then add an encrypted environment variable that overrides this when you
+      # push your application.
 
-       # We're just going to use this password for running the server locally for our
-       #development server which isn't a big deal most people don't even use a
-       #password when they run a local development server because it's outside
-       #of the internet it's not available to anyone else and it's only available on
-       #your local machine.
+      # We're just going to use this password for running the server locally for our
+      # development server which isn't a big deal most people don't even use a
+      # password when they run a local development server because it's outside
+      # of the internet it's not available to anyone else and it's only available on
+      # your local machine.
 
-       # Yes in a production site you would certainly want to ensure the passwords are not committed to GitHub.
-       #Typically you would use a secret management tool such as HashiCorp Vault or AWS Secrets Manager.
-       #You could also configure sensitive information via environment variables, which is a bit less secure
-       #but often sufficient if the system doesn't have highly sensitive data (like a government or bank).
+# Yes in a production site you would certainly want to ensure the passwords are not committed to GitHub.
+# Typically you would use a secret management tool such as HashiCorp Vault or AWS Secrets Manager.
+# You could also configure sensitive information via environment variables, which is a bit less secure
+# but often sufficient if the system doesn't have highly sensitive data (like a government or bank).
 
 
-     # We're going to set up environment variables for the database
-     # name, the username and the password that is created when our database
-     # service starts.
+# We're going to set up environment variables for the database
+# name, the username and the password that is created when our database
+# service starts.

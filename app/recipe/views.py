@@ -7,7 +7,9 @@ from core.models import Tag
 from . import serializers
 
 
-class TagViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+class TagViewSet(viewsets.GenericViewSet,
+                 mixins.ListModelMixin,
+                 mixins.CreateModelMixin):
     """Manage tags in the database"""
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
@@ -27,3 +29,10 @@ class TagViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     # the authenticated user
 
     # authentication is required
+
+    # override the perform create so that we can assign the
+    # tag to the correct user.
+    def perform_create(self, serializer):
+        """Create a new ingredient"""
+        serializer.save(user=self.request.user)
+        # set the user to the authenticated user.
