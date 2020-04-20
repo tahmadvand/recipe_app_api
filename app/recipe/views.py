@@ -2,7 +2,7 @@ from rest_framework import viewsets, mixins
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-from core.models import Tag
+from core.models import Tag, Ingredient
 
 from . import serializers
 
@@ -36,3 +36,19 @@ class TagViewSet(viewsets.GenericViewSet,
         """Create a new ingredient"""
         serializer.save(user=self.request.user)
         # set the user to the authenticated user.
+
+
+class IngredientViewSet(viewsets.GenericViewSet,
+                        mixins.ListModelMixin):
+    """Manage ingredients in the database"""
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (IsAuthenticated,)
+# make sure all
+# the users that use this API are authenticated
+    queryset = Ingredient.objects.all()
+# (): call the all function
+    serializer_class = serializers.IngredientSerializer
+
+    def get_queryset(self):
+        """Return objects for the current authenticated user only"""
+        return self.queryset.filter(user=self.request.user).order_by('-name')

@@ -45,7 +45,7 @@ RUN adduser -D user
 # going to be used simply to run our processes from our project.
 USER user
 # switch to user
-"""Security reasons"""
+# Security reasons
 
 # terminal: docker build .
 # it says build which ever dock a file is in the root of our project that we're currently in.
