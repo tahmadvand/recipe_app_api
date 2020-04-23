@@ -49,3 +49,4 @@ admin.site.register(models.Tag)
 # supports the basic create, read, update and delete
 # functions in the admin panel
 admin.site.register(models.Ingredient)
+admin.site.register(models.Recipe)

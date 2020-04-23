@@ -81,3 +81,33 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Recipe(models.Model):
+    """Recipe object"""
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+    # create a foreign key to the auth user model
+    # if we remove the user it will remove all the
+    # recipes as well --> that's what cascade does
+    title = models.CharField(max_length=255)
+    time_minutes = models.IntegerField()
+    price = models.DecimalField(max_digits=5, decimal_places=2)
+    link = models.CharField(max_length=255, blank=True)
+    # you can allow it to be blank
+    ingredients = models.ManyToManyField('Ingredient')
+# This string here you can actually remove the quotes and just
+# pass in the class directly The issue with this is you would
+# have to then have your classes in the correct order.
+# So if you remove the string around this reference to ingredient
+# you would need to make sure the ingredient is above the recipe.
+
+# Django has this useful feature where you can just provide the
+# name of the class in a string and then it doesn't matter which
+# order you place your models in.
+    tags = models.ManyToManyField('Tag')
+
+    def __str__(self):
+        return self.title
