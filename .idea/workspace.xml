@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6eea08ad-4134-42e1-89e7-3802c3658c03" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/app/recipe/tests/test_ingredients_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/recipe/tests/test_ingredients_api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/recipe/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/recipe/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -28,8 +27,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/recipe/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="330">
-              <caret line="59" selection-start-line="59" selection-end-line="59" />
+            <state relative-caret-position="1557">
+              <caret line="90" column="49" lean-forward="true" selection-start-line="41" selection-start-column="2" selection-end-line="90" selection-end-column="49" />
               <folding>
                 <element signature="e#0#43#0" expanded="true" />
               </folding>
@@ -244,15 +243,16 @@
       <workItem from="1587299847084" duration="1048000" />
       <workItem from="1587300917560" duration="1798000" />
       <workItem from="1587313176507" duration="9673000" />
-      <workItem from="1587398576432" duration="1204000" />
+      <workItem from="1587398576432" duration="1950000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="59856000" />
+    <option name="totallyTimeSpent" value="60602000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="718" y="46" width="1261" height="937" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17637408" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -535,8 +535,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/recipe/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="59" selection-start-line="59" selection-end-line="59" />
+        <state relative-caret-position="1557">
+          <caret line="90" column="49" lean-forward="true" selection-start-line="41" selection-start-column="2" selection-end-line="90" selection-end-column="49" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
           </folding>
