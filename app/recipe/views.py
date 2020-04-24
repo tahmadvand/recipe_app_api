@@ -127,3 +127,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
 # if the action is retrieve and we want to return the default,
 # the recipe detail sterilizer otherwise this won't
 # be called and it will just return the normal serializer class
+
+    def perform_create(self, serializer):
+        """Create a new recipe"""
+        serializer.save(user=self.request.user)
+
+# ModelViewSet allows you to create objects out of the box
+# So with the default functionality of it is if you pass a
+# serializer class and it's assigned to a model then it
+# knows how to create new objects with that model when you
+# do a HTTP POST.
+# So the only thing we need to do is assign the authenticated
+# user to that model once it has been created.

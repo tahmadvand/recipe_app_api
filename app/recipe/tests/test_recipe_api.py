@@ -129,3 +129,79 @@ class PrivateRecipeApiTests(TestCase):
         serializer = RecipeDetailSerializer(recipe)
     # in this case we just want to serialize a single object
         self.assertEqual(res.data, serializer.data)
+
+    def test_create_basic_recipe(self):
+        """Test creating recipe"""
+        payload = {
+            'title': 'Test recipe',
+            'time_minutes': 30,
+            'price': 10.00,
+        }
+        res = self.client.post(RECIPES_URL, payload)
+    # post this payload dictionary to our recipes URL.
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+    # this is the standard HTTP response code for creating objects
+    # in an API.
+        recipe = Recipe.objects.get(id=res.data['id'])
+    # When you create an object using the Django rest framework the
+    # default behavior is that it will return a dictionary containing
+    # the created object This is how I know that if we do res.data and
+    # retrieve the id key this will get the id of the created object.
+
+    # Next what we're going to do is we're going to loop through each
+    # one of these keys and then we're going to check
+    # that is the correct value assigned to our recipe model.
+        for key in payload.keys():
+            self.assertEqual(payload[key], getattr(recipe, key))
+        # assertion for each one of these keys, check that it is
+        # equal to the same key in the recipe
+        # payload[key]: This will actually get the value of the
+        # key in our payload object
+        # getattr: that allows you to retrieve an attribute from
+        # an object by passing in a variable. (instead of recipe.key)
+
+    def test_create_recipe_with_tags(self):
+        """Test creating a recipe with tags"""
+        tag1 = sample_tag(user=self.user, name='Tag 1')
+        tag2 = sample_tag(user=self.user, name='Tag 2')
+        payload = {
+            'title': 'Test recipe with two tags',
+            'tags': [tag1.id, tag2.id],
+            'time_minutes': 30,
+            'price': 10.00
+        }
+        res = self.client.post(RECIPES_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        recipe = Recipe.objects.get(id=res.data['id'])
+        # retrieve the created recipe
+        tags = recipe.tags.all()
+        # retrieve the tags that were created with the recipe
+        self.assertEqual(tags.count(), 2)
+        # because we expect two tags to be assigned.
+        self.assertIn(tag1, tags)
+        self.assertIn(tag2, tags)
+    # check if the tags that we created as our sample tags are
+    # the same as the tags that are in our queryset.
+
+    def test_create_recipe_with_ingredients(self):
+        """Test creating recipe with ingredients"""
+        ingredient1 = sample_ingredient(user=self.user, name='Ingredient 1')
+        ingredient2 = sample_ingredient(user=self.user, name='Ingredient 2')
+        payload = {
+            'title': 'Test recipe with ingredients',
+            'ingredients': [ingredient1.id, ingredient2.id],
+            'time_minutes': 45,
+            'price': 15.00
+        }
+
+        res = self.client.post(RECIPES_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        recipe = Recipe.objects.get(id=res.data['id'])
+        ingredients = recipe.ingredients.all()
+        # get the ingredients queryset
+        self.assertEqual(ingredients.count(), 2)
+        self.assertIn(ingredient1, ingredients)
+        self.assertIn(ingredient2, ingredients)
