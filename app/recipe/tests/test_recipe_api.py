@@ -6,9 +6,9 @@ from rest_framework import status
 from rest_framework.test import APIClient
 # use that for making our API requests
 
-from core.models import Recipe
+from core.models import Recipe, Tag, Ingredient
 
-from ..serializers import RecipeSerializer
+from ..serializers import RecipeSerializer, RecipeDetailSerializer
 
 
 RECIPES_URL = reverse('recipe:recipe-list')
@@ -16,6 +16,31 @@ RECIPES_URL = reverse('recipe:recipe-list')
 # or less all the tests let's assign that as a variable
 # at top of the class in all capitals.
 # app : identifier of the URL in the app
+
+# /api/recipe/recipes
+# /api/recipe/recipes/1/ (id) --> detail url
+
+
+def detail_url(recipe_id):
+    """Return recipe detail URL"""
+    return reverse('recipe:recipe-detail', args=[recipe_id])
+# name of the end point that the default router will create
+# for our viewset because we're going to have a detail action
+
+# this is how you specify arguments with the reverse function
+# you just pass in args and then you pass in a list of the
+# arguments you want to add
+# here we have single item
+
+
+def sample_tag(user, name='Main course'):
+    """Create and return a sample tag"""
+    return Tag.objects.create(user=user, name=name)
+
+
+def sample_ingredient(user, name='Cinnamon'):
+    """Create and return a sample ingredient"""
+    return Ingredient.objects.create(user=user, name=name)
 
 
 def sample_recipe(user, **params):
@@ -86,6 +111,21 @@ class PrivateRecipeApiTests(TestCase):
 
         recipes = Recipe.objects.filter(user=self.user)
         serializer = RecipeSerializer(recipes, many=True)
+    # many=true: this is because we were returning the list view
+    # or we wanted to simulate the list view in our serializer
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_view_recipe_detail(self):
+        """Test viewing a recipe detail"""
+        recipe = sample_recipe(user=self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+        recipe.ingredients.add(sample_ingredient(user=self.user))
+
+        url = detail_url(recipe.id)
+        res = self.client.get(url)
+
+        serializer = RecipeDetailSerializer(recipe)
+    # in this case we just want to serialize a single object
         self.assertEqual(res.data, serializer.data)

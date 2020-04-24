@@ -104,3 +104,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Retrieve the recipes for the authenticated user"""
         return self.queryset.filter(user=self.request.user)
+
+# rest framework documentation: this is the function that's called
+# to retrieve the serializer class for a particular request
+# and it is this function that you would use if you wanted to change
+# the serializer class for the different actions that are available on
+# the recipe viewset
+
+# we have a number of actions available by default in the model viewset
+# one of them is list in which case we just want to return the default
+# and the other action is retrieve in which case we want to return the
+# detail sterilizer so then when you call the retrieve action it
+# serializes it using that serializer instead of the default one
+
+    def get_serializer_class(self):
+        """Return appropriate serializer class"""
+        # name of the function is important to work correctly
+        if self.action == 'retrieve':
+            return serializers.RecipeDetailSerializer
+
+        return self.serializer_class
+# if the action is retrieve and we want to return the default,
+# the recipe detail sterilizer otherwise this won't
+# be called and it will just return the normal serializer class
