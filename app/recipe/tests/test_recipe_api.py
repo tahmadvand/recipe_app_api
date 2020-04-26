@@ -205,3 +205,76 @@ class PrivateRecipeApiTests(TestCase):
         self.assertEqual(ingredients.count(), 2)
         self.assertIn(ingredient1, ingredients)
         self.assertIn(ingredient2, ingredients)
+
+# test partial update and full update of an object
+# there are two ways in which you can update an object using the
+# API there's two different HTTP methods: put, patch
+# patch: Patch is used to update the fields that are provided
+# in the payload so the only fields that it will change are the
+# fields that are provided and any fields that are omitted from
+# the request will not be modified in the object that's being updated.
+    def test_partial_update_recipe(self):
+        """Test updating a recipe with patch"""
+    # make a request to change a field in our recipe.
+        recipe = sample_recipe(user=self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+    # add a tag to the recipe
+        new_tag = sample_tag(user=self.user, name='Curry')
+    # add a new tag and what we're going to do is we're going
+    # to swap out this tag that we create here and we're going
+    # to replace it with a new tag
+        payload = {'title': 'Partially Updated sample recipe',
+                   'tags': [new_tag.id]}
+    # tags will be replaced with this new tag so the existing tag that
+    # we created won't be assigned to it
+        url = detail_url(recipe.id)
+    # the way that you update an object using the Django rest framework
+    # view sets is you use the detail URL so that is the URL of the
+    # recipe with the ID of the recipe that we want to update.
+        self.client.patch(url, payload)
+    # make request
+    # We're going to retrieve an update to the recipe from the
+    # database and then we're going to check the fields that
+    # are assigned and just make sure they match what we expect.
+
+        recipe.refresh_from_db()
+    # refreshes the details in our recipe from the database
+    # typically when you create a new model and you have a
+    # reference to a model the details of that won't change
+    # unless you do refresh from dB if the values have changed
+    # in the database.
+        self.assertEqual(recipe.title, payload['title'])
+        tags = recipe.tags.all()
+        self.assertEqual(len(tags), 1)
+        self.assertIn(new_tag, tags)
+        #  check that the tag new tag is in the tags that we retrieved
+
+    # test full update
+    # put: it will replace the object that we're updating with the full
+    # object that is provided in the request that means if you exclude
+    # any fields in the payload those fields will actually be removed
+    # from the object that you're updating
+    def test_full_update_recipe(self):
+        """Test updating a recipe with put"""
+        recipe = sample_recipe(user=self.user)
+        recipe.tags.add(sample_tag(user=self.user))
+
+        payload = {
+            'title': 'Fully Updated sample recipe',
+            'time_minutes': 25,
+            'price': 5.00
+        }
+        url = detail_url(recipe.id)
+        self.client.put(url, payload)
+
+        recipe.refresh_from_db()
+        self.assertEqual(recipe.title, payload['title'])
+        self.assertEqual(recipe.time_minutes, payload['time_minutes'])
+        self.assertEqual(recipe.price, payload['price'])
+        tags = recipe.tags.all()
+        self.assertEqual(len(tags), 0)
+    # we will check that the tags assigned are zero now as I explained
+    # because when we do a HTTP put if we omit a field
+    # that should clear the value of that field so now our recipe
+    # that did have a sample tag assigned should not have any tags
+    # assigned

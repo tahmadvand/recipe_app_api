@@ -1,3 +1,7 @@
+import uuid
+# lets us generate the UID
+import os
+# use the OS dot path to create a valid path for our file destination
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
@@ -9,6 +13,23 @@ from django.conf import settings
 # model whilst making use of some of
 # the features that come with the django user model out of the box.
 # Create your models here.
+
+
+def recipe_image_file_path(instance, filename):
+    """Generate file path for new recipe image"""
+    ext = filename.split('.')[-1]
+# trip the extension part of the
+# filename so that's everything after the last dot
+# split it by dots, split the string into a list of items
+# [-1]: return the last item
+    filename = f'{uuid.uuid4()}.{ext}'
+# this create a string with a random UUID and then dot ext
+# the extension that was with the original filename
+
+    return os.path.join('uploads/recipe/', filename)
+# this is a helper function that allows you to reliably join
+# two strings together to make a valid path and if the path
+# is invalid it will return an error
 
 
 class UserManager(BaseUserManager):
@@ -108,6 +129,9 @@ class Recipe(models.Model):
 # name of the class in a string and then it doesn't matter which
 # order you place your models in.
     tags = models.ManyToManyField('Tag')
+
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
+# allow the field to be null so the image is optional
 
     def __str__(self):
         return self.title

@@ -139,6 +139,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = '/vol/web/media'
+STATIC_ROOT = '/vol/web/static'
+# it simply tells Django where to store all the media files
+# static root is where all the static files will be dumped
+# when the project is built
+# we can run this one starting our project and it will pull
+# all of the CSS and JavaScript that are required for the
+# Django rest framework browsable api and for the Django admin
+
+
 
 AUTH_USER_MODEL = 'core.User'
 # User is the name of the model

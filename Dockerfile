@@ -18,14 +18,17 @@ COPY ./requirements.txt /requirements.txt
 # to the Docker file, copy the requirements
 # file that we're going to create here and copy it on the Docker image to /requirements.txt
 
-RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache postgresql-client jpeg-dev
 # it uses the package manager that comes with Alpine
 # and it says this is the name of the package
+# this is the dependencies that we add that we don't
+# remove after we've installed the requirements
+# jpeg-dev this adds the JPEG dev binaries to our docker file
 
 # this update means update theregistry before we add
 # it but this no cache means don't store the registry index on our docker file.
 RUN apk add --update --no-cache --virtual .tmp-build-deps \
-      gcc libc-dev linux-headers postgresql-dev
+      gcc libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev
 # it sets up an alias for our
 # dependencies that we can use to easily remove all those dependencies later.
 RUN pip install -r /requirements.txt
@@ -38,11 +41,23 @@ COPY ./app /app
 # it creates a empty folder on our docket in the edge called forward slash at this location
 # and then it switches to that as the default directory.
 
+RUN mkdir -p /vol/web/media
+RUN mkdir -p /vol/web/static
+# this is so we have a place where we can store the static
+# and media files within our container without getting any permission errors
+# -p: make all of the sub directories including the directory
+
 RUN adduser -D user
 # create a user that is going to run our application using docker
 # -D: create a user that is going to be used for running applications only.
 # Not for basically having a home directory and that someone will log in to it's
 # going to be used simply to run our processes from our project.
+
+RUN chown -R user:user /vol/
+RUN chmod -R 755 /vol/web
+# change the ownership of these files (in vol directory) to the user
+# R: recursive
+
 USER user
 # switch to user
 # Security reasons

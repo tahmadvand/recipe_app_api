@@ -4,6 +4,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from .. import models
+from unittest.mock import patch
 
 
 #  makes it easy for us to create users in our test.
@@ -106,3 +107,31 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(str(recipe), recipe.title)
+
+# upload image
+    @patch('uuid.uuid4')
+    #  UUID for function is a function within the UUID
+    #  module which will generate a unique UUID version 4
+    def test_recipe_file_name_uuid(self, mock_uuid):
+        """Test that image is saved in the correct location"""
+    # we're going to mock the UUID function from the default UUID
+    # library that comes with Python and we're going to change
+    # the value that it returns and then we're going to call our
+    # function and we're going to make sure that the string that
+    # is created for the path matches what we expect it to match
+    # with the sample UUID
+        uuid = 'test-uuid'
+        mock_uuid.return_value = uuid
+    # mock the return value
+    # reliably test how our function works
+        file_path = models.recipe_image_file_path(None, 'myimage.jpg')
+    # myimage: file name of the original file which is being added
+
+        exp_path = f'uploads/recipe/{uuid}.jpg'
+    # define the expected path
+    # f: it's called literal string interpolation and what it basically
+    # means is you can insert variables inside your string without
+    # having to use the dot format and have that kind of messy
+    # additional code at the end of the string
+    # {}: insert variable
+        self.assertEqual(file_path, exp_path)
