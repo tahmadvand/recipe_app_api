@@ -70,3 +70,12 @@ class RecipeDetailSerializer(RecipeSerializer):
 # have one recipe detail sterilizer and then the related key object renders
 # or returns the ingredients objects which we can then pass into our ingredient
 # serializer and use that to convert it to this type of object.
+
+
+class RecipeImageSerializer(serializers.ModelSerializer):
+    """Serializer for uploading images to recipe"""
+
+    class Meta:
+        model = Recipe
+        fields = ('id', 'image')
+        read_only_fields = ('id',)

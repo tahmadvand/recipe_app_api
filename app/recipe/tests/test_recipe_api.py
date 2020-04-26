@@ -10,6 +10,17 @@ from core.models import Recipe, Tag, Ingredient
 
 from ..serializers import RecipeSerializer, RecipeDetailSerializer
 
+import tempfile
+# allows you to call a function which will then create a temp file
+# somewhere in the system and then you can remove that file after
+# you've used it
+import os
+# this allows us to perform things like
+# creating path names and also checking if files exist on the system
+from PIL import Image
+# pillow, this will import our image class which will let us then
+# create test images which we can then upload to our API
+
 
 RECIPES_URL = reverse('recipe:recipe-list')
 # since we're going to need to access the URL in more
@@ -19,6 +30,13 @@ RECIPES_URL = reverse('recipe:recipe-list')
 
 # /api/recipe/recipes
 # /api/recipe/recipes/1/ (id) --> detail url
+
+
+def image_upload_url(recipe_id):
+    """Return URL for recipe image upload"""
+    return reverse('recipe:recipe-upload-image', args=[recipe_id])
+# generate our upload image url
+# you're going to need the existing recipe ID in order to upload an image
 
 
 def detail_url(recipe_id):
@@ -278,3 +296,63 @@ class PrivateRecipeApiTests(TestCase):
     # that should clear the value of that field so now our recipe
     # that did have a sample tag assigned should not have any tags
     # assigned
+
+
+class RecipeImageUploadTests(TestCase):
+    # what happens at the setup of the test
+    def setUp(self):
+        self.client = APIClient()
+        self.user = get_user_model().objects.create_user('user', 'testpass')
+        self.client.force_authenticate(self.user)
+    # authenticate our user
+        self.recipe = sample_recipe(user=self.user)
+
+    # after the test runs it runs tear down
+    def tearDown(self):
+        self.recipe.image.delete()
+        # make sure that our file system is kept clean after our test
+        # removing all of the test files that we create
+        # delete the image if it exists in the recipe
+
+    def test_upload_image_to_recipe(self):
+        """Test uploading an image to recipe"""
+        url = image_upload_url(self.recipe.id)
+        # going to use the sample recipe that gets created
+
+        # it creates a named temporary file on the system at a random
+        # location usually in the /temp folder
+
+        # create a temporary file we're going to write an image
+        # to that file and then we're going to upload that file
+        # through the API like you would with a HTTP POST and then
+        # we're going to run some assertions to check that it
+        # uploaded correctly
+        with tempfile.NamedTemporaryFile(suffix='.jpg') as ntf:
+            img = Image.new('RGB', (10, 10))
+            # creates black square
+            img.save(ntf, format='JPEG')
+            ntf.seek(0)
+            # it's the way that Python reads files so because we've
+            # saved the file it will be the seeking will be done to the
+            # end of the file so if you try to access it then it would
+            # just be blank because you've already read up to the end
+            # of the file so use this seek function to set
+            # the pointer back to the beginning of the file
+            res = self.client.post(url, {'image': ntf}, format='multipart')
+
+        # assertions
+        # refreshing the database for our recipe
+        self.recipe.refresh_from_db()
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        # check that the images in the response so that's the path to
+        # the image that should be accessible
+        self.assertIn('image', res.data)
+        # check that the path exists for the image that is saved to our model
+        self.assertTrue(os.path.exists(self.recipe.image.path))
+
+    def test_upload_image_bad_request(self):
+        """Test uploading an invalid image"""
+        url = image_upload_url(self.recipe.id)
+        res = self.client.post(url, {'image': 'notimage'}, format='multipart')
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
