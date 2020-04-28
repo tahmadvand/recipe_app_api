@@ -28,6 +28,7 @@ class BaseRecipeAttrViewSet(viewsets.GenericViewSet,
 
     def get_queryset(self):
         """Return objects for the current authenticated user only"""
+
         return self.queryset.filter(user=self.request.user).order_by('-name')
 
     def perform_create(self, serializer):
@@ -108,10 +109,45 @@ class RecipeViewSet(viewsets.ModelViewSet):
     authentication_classes = (TokenAuthentication,)
     permission_classes = (IsAuthenticated,)
 
+    def _params_to_ints(self, qs):
+        # qs: query string
+        """Convert a list of string IDs to a list of integers"""
+        # qs is going to be the comma separated list which is
+        # going to be in the form of a string and we're going
+        # to convert that to an actual Python list of integer types
+        return [int(str_id) for str_id in qs.split(',')]
+    # run code inside your list to return a list
+    # return a list of strings split up by the comma
+
     def get_queryset(self):
         """Retrieve the recipes for the authenticated user"""
-        return self.queryset.filter(user=self.request.user)
-
+        # retrieving the get parameters for tags
+        # request object has a variable called query
+        # params which will be a dictionary containing
+        # all of the query params that are provided in the request
+        tags = self.request.query_params.get('tags')
+        # if we have provided tags as a query param or a query
+        # string then it will be assigned to tags the actual
+        # string that you provided and if not then by default
+        # the get function returns none so the tags key doesn't
+        # exist in our query params then this will be set to
+        # none so that way we can check if it's been
+        # provided or not
+        ingredients = self.request.query_params.get('ingredients')
+        queryset = self.queryset
+        # the reason we do this is because we don't want to be
+        # reassigning our query set with the filtered options
+        # we want to actually reference it here by query set
+        # apply the filters and then return that instead of
+        # our main query set
+        if tags:
+            tag_ids = self._params_to_ints(tags)
+            # convert it to a list of ID's
+            queryset = queryset.filter(tags__id__in=tag_ids)
+        if ingredients:
+            ingredient_ids = self._params_to_ints(ingredients)
+            queryset = queryset.filter(ingredients__id__in=ingredient_ids)
+        return queryset.filter(user=self.request.user)
 # rest framework documentation: this is the function that's called
 # to retrieve the serializer class for a particular request
 # and it is this function that you would use if you wanted to change
